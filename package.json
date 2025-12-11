@@ -1,7 +1,7 @@
 {
   "name": "user-management-system",
   "version": "1.0.0",
-  "description": "نظام إدارة المستخدمين مع تشفير كلمات المرور",
+  "description": "نظام إدارة المستخدمين مع واجهة أمامية",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
