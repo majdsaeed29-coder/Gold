@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المستخدمين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-users-cog"></i>
+                <span>نظام المستخدمين</span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="nav-link" onclick="showView('home')">
+                    <i class="fas fa-home"></i> الرئيسية
+                </a>
+                <a href="#" class="nav-link" onclick="showView('login')" id="loginNav">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </a>
+                <a href="#" class="nav-link" onclick="showView('register')" id="registerNav">
+                    <i class="fas fa-user-plus"></i> تسجيل جديد
+                </a>
+                <a href="#" class="nav-link" onclick="showView('profile')" id="profileNav" style="display:none">
+                    <i class="fas fa-user"></i> الملف الشخصي
+                </a>
+                <a href="#" class="nav-link" onclick="showView('users')" id="usersNav" style="display:none">
+                    <i class="fas fa-users"></i> إدارة المستخدمين
+                </a>
+                <a href="#" class="nav-link" onclick="logout()" id="logoutNav" style="display:none">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </a>
+            </div>
+            <div class="user-info" id="userInfo" style="display:none">
+                <span id="usernameDisplay"></span>
+                <span class="user-role" id="userRole"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- الرسائل -->
+    <div class="alerts-container">
+        <div id="alertMessage" class="alert" style="display:none"></div>
+    </div>
+
+    <!-- محتوى الصفحة الرئيسي -->
+    <div class="container">
+        <!-- الصفحة الرئيسية -->
+        <div id="homeView" class="view">
+            <div class="hero">
+                <h1><i class="fas fa-shield-alt"></i> نظام إدارة المستخدمين المتقدم</h1>
+                <p class="subtitle">نظام آمن ومتكامل لإدارة حسابات المستخدمين مع تشفير متقدم</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-lock"></i>
+                        <h3>تشفير آمن</h3>
+                        <p>تشفير كلمات المرور باستخدام أقوى الخوارزميات</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>صلاحيات متعددة</h3>
+                        <p>إدارة الصلاحيات (مسؤول، مشرف، مستخدم)</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>تقارير متقدمة</h3>
+                        <p>متابعة وتحليل نشاط المستخدمين</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة تسجيل الدخول -->
+        <div id="loginView" class="view" style="display:none">
+            <div class="form-container">
+                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">
+                            <i class="fas fa-envelope"></i> البريد الإلكتروني
+                        </label>
+                        <input type="email" id="loginEmail" required placeholder="example@domain.com">
+                        <div class="error-message" id="loginEmailError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">
+                            <i class="fas fa-key"></i> كلمة المرور
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="loginPassword" required placeholder="أدخل كلمة المرور">
+                            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message" id="loginPasswordError"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </button>
+                    
+                    <div class="form-footer">
+                        <p>ليس لديك حساب؟ <a href="#" onclick="showView('register')">سجل الآن</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- صفحة التسجيل -->
+        <div id="registerView" class="view" style="display:none">
+            <div class="form-container">
+                <h2><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h2>
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regUsername">
+                                <i class="fas fa-user"></i> اسم المستخدم
+                            </label>
+                            <input type="text" id="regUsername" required placeholder="اسم المستخدم">
+                            <div class="error-message" id="regUsernameError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="regFullName">
+                                <i class="fas fa-id-card"></i> الاسم الكامل
+                            </label>
+                            <input type="text" id="regFullName" placeholder="الاسم الكامل">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regEmail">
+                            <i class="fas fa-envelope"></i> البريد الإلكتروني
+                        </label>
+                        <input type="email" id="regEmail" required placeholder="example@domain.com">
+                        <div class="error-message" id="regEmailError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPhone">
+                            <i class="fas fa-phone"></i> رقم الهاتف
+                        </label>
+                        <input type="tel" id="regPhone" placeholder="05XXXXXXXX">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regPassword">
+                                <i class="fas fa-key"></i> كلمة المرور
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="regPassword" required placeholder="كلمة المرور">
+                                <button type="button" class="toggle-password" onclick="togglePassword('regPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="regPasswordError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="regConfirmPassword">
+                                <i class="fas fa-key"></i> تأكيد كلمة المرور
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="regConfirmPassword" required placeholder="تأكيد كلمة المرور">
+                                <button type="button" class="toggle-password" onclick="togglePassword('regConfirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="regConfirmPasswordError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span id="strengthText">قوة كلمة المرور: ضعيفة</span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-block">
+                        <i class="fas fa-user-plus"></i> إنشاء الحساب
+                    </button>
+                    
+                    <div class="form-footer">
+                        <p>لديك حساب بالفعل؟ <a href="#" onclick="showView('login')">سجل الدخول</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- صفحة الملف الشخصي -->
+        <div id="profileView" class="view" style="display:none">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profileName">اسم المستخدم</h2>
+                        <p class="profile-email" id="profileEmail">email@example.com</p>
+                        <span class="badge" id="profileRole">مستخدم</span>
+                    </div>
+                </div>
+                
+                <div class="profile-grid">
+                    <div class="profile-card">
+                        <h3><i class="fas fa-info-circle"></i> معلومات الحساب</h3>
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span class="info-label">اسم المستخدم:</span>
+                                <span class="info-value" id="infoUsername"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">البريد الإلكتروني:</span>
+                                <span class="info-value" id="infoEmail"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">رقم الهاتف:</span>
+                                <span class="info-value" id="infoPhone"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">تاريخ التسجيل:</span>
+                                <span class="info-value" id="infoCreatedAt"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-card">
+                        <h3><i class="fas fa-key"></i> تغيير كلمة المرور</h3>
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label>كلمة المرور الحالية</label>
+                                <div class="password-input">
+                                    <input type="password" id="currentPassword" required>
+                                    <button type="button" class="toggle-password" onclick="togglePassword('currentPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة</label>
+                                <div class="password-input">
+                                    <input type="password" id="newPassword" required>
+                                    <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>تأكيد كلمة المرور الجديدة</label>
+                                <div class="password-input">
+                                    <input type="password" id="confirmNewPassword" required>
+                                    <button type="button" class="toggle-password" onclick="togglePassword('confirmNewPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-warning btn-block">
+                                <i class="fas fa-sync-alt"></i> تحديث كلمة المرور
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="profile-card">
+                        <h3><i class="fas fa-cog"></i> إعدادات الحساب</h3>
+                        <div class="settings-list">
+                            <button class="btn btn-outline" onclick="editProfile()">
+                                <i class="fas fa-edit"></i> تعديل المعلومات
+                            </button>
+                            <button class="btn btn-outline" onclick="showView('users')" id="manageUsersBtn" style="display:none">
+                                <i class="fas fa-users-cog"></i> إدارة المستخدمين
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة إدارة المستخدمين (للمسؤولين) -->
+        <div id="usersView" class="view" style="display:none">
+            <div class="admin-container">
+                <h2><i class="fas fa-users-cog"></i> إدارة المستخدمين</h2>
+                
+                <div class="admin-tools">
+                    <div class="search-box">
+                        <input type="text" id="searchUsers" placeholder="ابحث عن مستخدم...">
+                        <button class="btn btn-search" onclick="searchUsers()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-buttons">
+                        <button class="btn btn-filter active" onclick="filterUsers('all')">الكل</button>
+                        <button class="btn btn-filter" onclick="filterUsers('admin')">المسؤولون</button>
+                        <button class="btn btn-filter" onclick="filterUsers('user')">المستخدمون</button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المستخدم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الاسم الكامل</th>
+                                <th>الدور</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- سيتم ملؤها بالجافاسكريبت -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- سيتم إنشاؤها بالجافاسكريبت -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal لتعديل المستخدم -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> تعديل المستخدم</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="editFullName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" id="editPhone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>الدور</label>
+                        <select id="editRole">
+                            <option value="user">مستخدم</option>
+                            <option value="moderator">مشرف</option>
+                            <option value="admin">مسؤول</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2024 نظام إدارة المستخدمين. جميع الحقوق محفوظة.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-shield-alt"></i> الخصوصية</a>
+                <a href="#"><i class="fas fa-file-contract"></i> الشروط</a>
+                <a href="#"><i class="fas fa-headset"></i> الدعم</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
